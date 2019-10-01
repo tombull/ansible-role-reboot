@@ -7,6 +7,7 @@
   register: reboot_install_requirements
   when: ansible_distribution | lower != 'coreos'
   until: reboot_install_requirements is succeeded
+  become: true
   retries: 3
 
 - name: Check for needs-restarting for rhel
