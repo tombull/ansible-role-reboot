@@ -1,25 +1,26 @@
 ---
 # tasks file for reboot
-- name: install requirements
+- name: Install requirements
   package:
-    name: "{{ reboot_requirements }}"
+    name: '{{ reboot_requirements }}'
     state: present
   register: reboot_install_requirements
+  when: ansible_distribution | lower != 'coreos'
   until: reboot_install_requirements is succeeded
   retries: 3
 
-- name: check for needs-restarting for rhel
+- name: Check for needs-restarting for rhel
   stat:
     path: /usr/bin/needs-restarting
   register: reboot_check_for_needs_restarting_for_rhel
 
-- name: check for needs-restarting for debian
+- name: Check for needs-restarting for debian
   stat:
     path: /var/run/needs-restarting
   register: reboot_check_for_needs_restarting_for_debian
 
-- name: see if a reboot is required for rhel
-  command: "{{ reboot_needs_restarting_command }}"
+- name: See if a reboot is required for rhel
+  command: '{{ reboot_needs_restarting_command }}'
   register: needsrestarting
   changed_when:
     - needsrestarting.rc != 0
@@ -31,8 +32,8 @@
     - reboot_check_for_needs_restarting_for_rhel.stat.exists
     - not reboot_always | bool
 
-- name: reboot the machine
-  shell: "(sleep {{ reboot_delay }} && {{ reboot_command }} &)"
+- name: Reboot the machine
+  shell: '(sleep {{ reboot_delay }} && {{ reboot_command }} &)'
   async: 1
   poll: 0
   ignore_errors: yes
@@ -46,5 +47,5 @@
     - 2 wait for the machine to be up
     - 3 gather facts after reboot
 
-- name: flush handlers
+- name: Flush handlers
   meta: flush_handlers
