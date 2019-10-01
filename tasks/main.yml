@@ -1,24 +1,30 @@
 ---
 # tasks file for reboot
-- name: install requirements
+- name: Install requirements
   package:
     name: "{{ reboot_requirements }}"
     state: present
   register: reboot_install_requirements
+  when: ansible_distribution | lower != 'coreos'
   until: reboot_install_requirements is succeeded
   retries: 3
 
-- name: check for needs-restarting for rhel
+- name: Check for needs-restarting for rhel
   stat:
     path: /usr/bin/needs-restarting
   register: reboot_check_for_needs_restarting_for_rhel
 
-- name: check for needs-restarting for debian
+- name: Check for needs-restarting for debian
   stat:
     path: /var/run/needs-restarting
   register: reboot_check_for_needs_restarting_for_debian
 
-- name: see if a reboot is required for rhel
+- name: Check for reboot-required for ubuntu
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_check_for_reboot_required_for_ubuntu
+
+- name: See if a reboot is required for rhel
   command: "{{ reboot_needs_restarting_command }}"
   check_mode: no
   register: needsrestarting
@@ -33,7 +39,7 @@
     - reboot_check_for_needs_restarting_for_rhel.stat.exists
     - not reboot_always | bool
 
-- name: reboot the machine
+- name: Reboot the machine
   shell: "(sleep {{ reboot_delay }} && {{ reboot_command }} &)"
   async: 1
   poll: 0
@@ -42,13 +48,14 @@
     - ansible_virtualization_type != "docker"
     - ansible_virtualization_type != "container"
     - reboot_always | bool or
-     ((reboot_check_for_needs_restarting_for_rhel.stat.exists and
+      ((reboot_check_for_needs_restarting_for_rhel.stat.exists and
       needsrestarting.rc == 1) or
-      reboot_check_for_needs_restarting_for_debian.stat.exists)
+      reboot_check_for_needs_restarting_for_debian.stat.exists or
+      reboot_check_for_reboot_required_for_ubuntu.stat.exists)
   notify:
     - 1 wait for the start of reboot
     - 2 wait for the machine to be up
     - 3 gather facts after reboot
 
-- name: flush handlers
+- name: Flush handlers
   meta: flush_handlers
