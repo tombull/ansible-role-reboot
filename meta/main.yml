@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+<<<<<<< HEAD
   author: Robert de Bock
   role_name: reboot
   description: The purpose of this role is to reboot your system.
@@ -34,3 +35,6 @@ galaxy_info:
     - redhat
 
 dependencies: []
+=======
+  min_ansible_version: 2.6
+>>>>>>> Turns out that the meta/main.yml file WAS required!
