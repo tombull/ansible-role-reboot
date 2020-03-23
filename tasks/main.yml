@@ -41,10 +41,9 @@
     - not reboot_always | bool
 
 - name: Reboot the machine
-  shell: "sleep {{ reboot_delay }} && {{ reboot_command }}"
-  async: 1
-  poll: 0
-  ignore_errors: yes
+  reboot:
+    msg: "{{ reboot_message }}"
+    post_reboot_delay: "{{ reboot_delay }}"
   when:
     - ansible_virtualization_type != "docker"
     - ansible_virtualization_type != "container"
