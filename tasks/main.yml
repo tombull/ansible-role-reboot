@@ -41,7 +41,7 @@
     - not reboot_always | bool
 
 - name: Reboot the machine
-  shell: 'sh -c "(sleep {{ reboot_delay }} && {{ reboot_command }} &)"'
+  shell: "sleep {{ reboot_delay }} && {{ reboot_command }}"
   async: 1
   poll: 0
   ignore_errors: yes
