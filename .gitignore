@@ -1,9 +1,7 @@
 .molecule
 *.log
 *.swp
-<<<<<<< HEAD
 .tox
-=======
 *_ssh_key
 *_ssh_key.pub
 
@@ -158,4 +156,3 @@ dmypy.json
 .history
 
 # End of https://www.gitignore.io/api/macos,python,ansible,visualstudiocode
->>>>>>> Remove unnecessary files, update .gitignore
