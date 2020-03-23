@@ -40,11 +40,8 @@
     - reboot_check_for_needs_restarting_for_rhel.stat.exists
     - not reboot_always | bool
 
-- debug:
-    msg: "(sleep {{ reboot_delay }} && {{ reboot_command }} &)"
-
 - name: Reboot the machine
-  shell: "(sleep {{ reboot_delay }} && {{ reboot_command }} &)"
+  shell: 'sh -c "(sleep {{ reboot_delay }} && {{ reboot_command }} &)"'
   async: 1
   poll: 0
   ignore_errors: yes
