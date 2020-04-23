@@ -40,6 +40,17 @@
     - reboot_check_for_needs_restarting_for_rhel.stat.exists
     - not reboot_always | bool
 
+- name: See if a reboot is required for debian
+  command: "{{ reboot_needs_restarting_command }}"
+  check_mode: no
+  register: needrestarting
+  changed_when: no
+  when:
+    - ansible_virtualization_type != "docker"
+    - ansible_virtualization_type != "container"
+    - ansible_os_family == "Debian"
+  become: yes
+
 - name: Reboot the machine
   reboot:
     msg: "{{ reboot_message }}"
@@ -51,11 +62,14 @@
       ((reboot_check_for_needs_restarting_for_rhel.stat.exists and
       needsrestarting.rc == 1) or
       reboot_check_for_needs_restarting_for_debian.stat.exists or
-      reboot_check_for_reboot_required_for_ubuntu.stat.exists)
+      reboot_check_for_reboot_required_for_ubuntu.stat.exists) or
+      ("'NEEDRESTART-KSTA' in debian_needrestarting.stdout" and
+      "'3' in debian_needrestarting.stdout")
   notify:
     - 1 wait for the start of reboot
     - 2 wait for the machine to be up
     - 3 gather facts after reboot
+  become: yes
 
 - name: Flush handlers
   meta: flush_handlers
