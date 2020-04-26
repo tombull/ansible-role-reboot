@@ -60,7 +60,7 @@
 - debug:
     var: reboot_check_for_reboot_required_for_ubuntu.stat.exists
 - debug:
-    var: eedrestarting.stdout
+    var: needsrestarting.stdout
 
 - name: Reboot the machine
   reboot:
