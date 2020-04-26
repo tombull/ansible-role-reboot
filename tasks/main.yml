@@ -60,7 +60,7 @@
 - debug:
     var: reboot_check_for_reboot_required_for_ubuntu.stat.exists
 - debug:
-    var: ('NEEDRESTART-KSTA' in debian_needrestarting.stdout and '3' in debian_needrestarting.stdout)
+    var: ('NEEDRESTART-KSTA' in needrestarting.stdout and '3' in needrestarting.stdout)
 
 - name: Reboot the machine
   reboot:
@@ -74,8 +74,8 @@
       needsrestarting.rc == 1) or
       reboot_check_for_needs_restarting_for_debian.stat.exists or
       reboot_check_for_reboot_required_for_ubuntu.stat.exists) or
-      ('NEEDRESTART-KSTA' in debian_needrestarting.stdout and
-      '3' in debian_needrestarting.stdout)
+      ('NEEDRESTART-KSTA' in needrestarting.stdout and
+      '3' in needrestarting.stdout)
   notify:
     - 1 wait for the start of reboot
     - 2 wait for the machine to be up
