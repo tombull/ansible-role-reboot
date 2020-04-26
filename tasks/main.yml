@@ -60,7 +60,7 @@
 - debug:
     var: reboot_check_for_reboot_required_for_ubuntu.stat.exists
 - debug:
-    var: ('NEEDRESTART-KSTA' in needrestarting.stdout and '3' in needrestarting.stdout)
+    var: eedrestarting.stdout
 
 - name: Reboot the machine
   reboot:
